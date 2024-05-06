@@ -181,7 +181,7 @@ From the result it is clear that the padding is needed for CBC and ECB algorithm
 
 Using SHA-256 :    
 ```
-openssl dgst -sha256 Task5.txt
+openssl dgst -sha256 Text5.txt
 ```
 
 Generated Hash :   
@@ -203,7 +203,7 @@ MD5(Text5.txt)= b4af4c23b7ef3c3c15ff9156cd9755ab
 
 Using SHA-1 :
 ```
-openssl dgst -sha1 Task5.txt
+openssl dgst -sha1 Text5.txt
 ```
 
 Generated Hash :   
@@ -248,3 +248,69 @@ Generated Hash :
 ```
 HMAC-SHA1(Text6.txt)= ff12ad34be10941bfe55b8ec06e6764ce5b29a44
 ```
+
+
+
+# Task 7
+
+Using SHA-256
+
+```
+openssl dgst -sha256 -hmac "abc123" Text7.txt
+```
+
+Generated Hash
+```
+HMAC-SHA2-256(Text7.txt)= c7ba3ffeda43b4cc6118212b92f5b323fc2bc24553d4d20032d9d16919e36398
+```
+
+After changing one bit of input file :    
+```
+openssl dgst -sha256 -hmac "abc123" Text7.txt
+```
+
+Generated Hash
+```
+HMAC-SHA2-256(Text7.txt)= 60602db7079dd2a8af5f1ba350f82ab3db8aacf3c9a502f68787095c2ccd2c12
+```
+
+
+Code for finding matched bit :
+```
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    string hash1,hash2;
+    cin>>hash1>>hash2;
+    int result = 0;
+    for(int i=0;i<hash1.size();i++){
+        if(hash1[i]==hash2[i]) result++;
+    }
+    cout<<"Matched Bit : "<<result<<endl;
+    return 0;
+}
+```
+
+No of matched bit :     
+<img src="../Lab3/Task7/output1.png">
+
+
+
+Using Message Digest 5 :
+```
+openssl dgst -md5 -hmac "abc123" Text7.txt
+```
+
+Generated hash :
+```
+HMAC-MD5(Text7.txt)= 84f72fd02a1476ccb2c61b4312eb0a76
+```
+
+Generated hash after changing 1 bit :
+```
+HMAC-MD5(Text7.txt)= 5a7d6e55fa25b574319a834be4bdf902
+```
+
+No of matched bit :      
+<img src="../Lab3/Task7/output2.png">
