@@ -175,3 +175,40 @@ Result Analysis :
 <img src="../Lab3/Task4/Task4.png">   
 
 From the result it is clear that the padding is needed for CBC and ECB algorithm. Cause it makes the size of encrypted file 96 bits which can be devided by 16.
+
+
+## Task 5
+
+Using SHA-256 :    
+```
+openssl dgst -sha256 Task5.txt
+```
+
+Generated Hash :   
+```
+SHA2-256(Text5.txt)= 835e350e9d0886d1ceca72baaece3931a5b8fdf32224c5afa10d7b41aff5ab48
+```
+
+
+Using Message Digest 5 :
+```
+openssl dgst -md5 sample.txt
+```
+
+Generated Hash :   
+```
+MD5(Text5.txt)= b4af4c23b7ef3c3c15ff9156cd9755ab
+```
+
+
+Using SHA-1 :
+```
+openssl dgst -sha1 Task5.txt
+```
+
+Generated Hash :   
+```
+SHA1(Text5.txt)= 8718bb76a9e832c6911f069c61f82d97a547abbf
+```
+
+After ovserving it can say that SHA2-256 is more secure than SHA-1 and MD5. Because it generates longer hash value than others.
