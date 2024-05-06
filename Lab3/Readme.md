@@ -54,7 +54,7 @@ openssl enc -aes-128-ecb -d  -in Task1-aes-128-ecb.bin \
 
 
 
-## Task 3
+# Task 3
 
 <b>ECB Mode :</b>  
 
@@ -142,7 +142,7 @@ Decryption text :
 
 
 
-## Task 4 
+# Task 4 
 
 <b>Encryption : </b>   
 Using ECB mode :     
@@ -177,7 +177,7 @@ Result Analysis :
 From the result it is clear that the padding is needed for CBC and ECB algorithm. Cause it makes the size of encrypted file 96 bits which can be devided by 16.
 
 
-## Task 5
+# Task 5
 
 Using SHA-256 :    
 ```
@@ -212,3 +212,39 @@ SHA1(Text5.txt)= 8718bb76a9e832c6911f069c61f82d97a547abbf
 ```
 
 After ovserving it can say that SHA2-256 is more secure than SHA-1 and MD5. Because it generates longer hash value than others.
+
+
+
+# Task 6
+
+Using HMAC-MD5 :
+```
+openssl dgst -md5 -hmac "abcdefg" Text6.txt
+```
+
+Generated Hash :
+```
+HMAC-MD5(Text6.txt)= a67411e644525c34b904b4eef1281d82
+```
+
+
+Using HMAC-SHA256 :
+```
+openssl dgst -sha256 -hmac "abc123" Text6.txt
+```
+
+Generated Hash :
+```
+HMAC-SHA2-256(Text6.txt)= 2a6bc51fa7392a0d29565730e0d4fdb49ea05315b372b93dc658c12b7d27b77c
+```
+
+
+Using HMAC-SHA1 :
+```
+openssl dgst -sha1 -hmac "abc123efg" Text6.txt
+```
+
+Generated Hash :
+```
+HMAC-SHA1(Text6.txt)= ff12ad34be10941bfe55b8ec06e6764ce5b29a44
+```
