@@ -144,3 +144,34 @@ Decryption text :
 
 ## Task 4 
 
+<b>Encryption : </b>   
+Using ECB mode :     
+```
+openssl enc -aes-128-ecb -e  -in Task4.txt -out encryptedTask4-ecb.bin -K 00112233445566778889aabbccd3322a
+```
+
+Using CBC mode :     
+```
+openssl enc -aes-128-cbc -e  -in Task4.txt -out encryptedTask4-cbc.bin \
+                -K  00112233445566778889aabbccddeeff \
+                -iv 01020304050607083241231213124f23
+```
+
+Using CFB mode :     
+```
+openssl enc -aes-128-cfb -e  -in Task4.txt -out encryptedTask4-cfb.bin \
+                -K  00112233445566778889aabbccddeeff \
+                -iv 01020304050607083241231213124f23
+```
+
+Using OFB mode :     
+```
+openssl enc -aes-128-ofb -e  -in Task4.txt -out encryptedTask4-ofb.bin \
+                -K  00112233445566778889aabbccddeeff \
+                -iv 01020304050607083241231213124f23
+```
+
+Result Analysis :    
+<img src="../Lab3/Task4/Task4.png">   
+
+From the result it is clear that the padding is needed for CBC and ECB algorithm. Cause it makes the size of encrypted file 96 bits which can be devided by 16.
