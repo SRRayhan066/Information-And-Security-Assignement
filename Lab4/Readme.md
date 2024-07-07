@@ -12,11 +12,58 @@ pip install cryptography
 
 For encryption and decryption, we need to generate an AES key. That’s why for 128 bits we create an AES key named `aes_key.bin`.
  
-<img src="./images/aes_key_generated.png">  
+```
+def generate_aes_key(key_size):
+    return os.urandom(key_size // 8)
+```
 
 The generated `aes_key.bin` looks like this,
 
 <img src="./images/aes_key.png">
+
+### Pseudocode for AES Encryption/Decryption
+
+```
+def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=True):
+    backend = default_backend()
+    block_size = algorithms.AES.block_size
+
+    if mode == 'ECB':
+        cipher_mode = modes.ECB()
+    elif mode == 'CFB':
+        cipher_mode = modes.CFB(iv)
+
+    cipher = Cipher(algorithms.AES(key), cipher_mode, backend=backend)
+
+    if encrypt:
+        encryptor = cipher.encryptor()
+        padder = sym_padding.PKCS7(block_size).padder()
+
+        with open(input_file, 'rb') as f:
+            plaintext = f.read()
+
+        padded_plaintext = padder.update(plaintext) + padder.finalize()
+        ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
+
+        with open(output_file, 'wb') as f:
+            if mode == 'CFB':
+                f.write(iv)
+            f.write(ciphertext)
+    else:
+        decryptor = cipher.decryptor()
+        unpadder = sym_padding.PKCS7(block_size).unpadder()
+
+        with open(input_file, 'rb') as f:
+            if mode == 'CFB':
+                iv = f.read(block_size // 8)
+            ciphertext = f.read()
+
+        padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+        plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
+
+        with open(output_file, 'wb') as f:
+            f.write(plaintext)
+```
 
 ### ECB Mode
 
@@ -64,3 +111,8 @@ And the decryption process is,
 The decrypted file,
 
 <img src="./images/ECB_256_decrypted_file.png">
+
+
+### CFB Mode
+Similar process for CFB mode 128 bits and 256 bits.
+
