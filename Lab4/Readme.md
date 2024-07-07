@@ -326,4 +326,19 @@ def rsa_sign_verify(input_file, signature_file, private_key_file=None, public_ke
 
 # SHA-256 hashing
 
+### Pseudocode of SHA-256 Hashing
+
+```
+def sha256_hash(input_file):
+    sha256 = hashlib.sha256()
+
+    with open(input_file, 'rb') as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256.update(byte_block)
+
+    print("SHA-256 hash:", sha256.hexdigest())
+```
+
+### Hashing
+
 <img src="./images/SHA_256_Hashing.png">
