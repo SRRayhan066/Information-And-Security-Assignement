@@ -31,8 +31,16 @@ def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=Tru
     if mode == 'ECB':
         cipher_mode = modes.ECB()
     elif mode == 'CFB':
-        cipher_mode = modes.CFB(iv)
-
+        if encrypt:
+            if iv is None:
+                iv = os.urandom(16)
+            cipher_mode = modes.CFB(iv)
+        else:
+            with open(input_file, 'rb') as f:
+                iv = f.read(16)
+                ciphertext = f.read()
+            cipher_mode = modes.CFB(iv)
+    
     cipher = Cipher(algorithms.AES(key), cipher_mode, backend=backend)
 
     if encrypt:
@@ -54,10 +62,11 @@ def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=Tru
         unpadder = sym_padding.PKCS7(block_size).unpadder()
 
         with open(input_file, 'rb') as f:
-            if mode == 'CFB':
-                iv = f.read(block_size // 8)
-            ciphertext = f.read()
-
+            if mode != 'CFB':
+                ciphertext = f.read()
+            # No need to re-read the file here, already read above
+            # ciphertext = f.read()
+        
         padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
         plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
 
