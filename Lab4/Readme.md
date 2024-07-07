@@ -26,17 +26,20 @@ After that, we have created an input.txt file and encrypt it using ECB 128 bits.
 
 <img src="./images/ECB_128_encryption.png">
 
-The encrypted file look like this,
+The encrypted file look like this,            
+
 <img src="./images/ECB_128_encryption_file.png">
 
 
 
 #### <b>Decryption using 128 bits</b>
 
-After decryption,     
+After decryption,      
+
 <img src="./images/ECB_128_decryption.png">
 
-The decryption file,
+The decryption file,        
+
 <img src="./images/ECB_128_decryption_file.png">
 
 
