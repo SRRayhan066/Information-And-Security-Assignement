@@ -320,4 +320,10 @@ def rsa_sign_verify(input_file, signature_file, private_key_file=None, public_ke
 
 ### Verify Signature
 
-<img src="./images/verify.png">
+<img src="./images/verify.png">    
+
+
+
+# SHA-256 hashing
+
+<img src="./images/SHA_256_Hashing.png">
