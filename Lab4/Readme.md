@@ -154,3 +154,105 @@ Similar process for CFB mode 128 bits and 256 bits.
 
 
 <img src="./images/CFB_256_encryption_file.png">
+
+
+
+# RSA Encryption and Decryption
+
+### Pseudocode of RSA encryption and decryption
+
+```
+def rsa_encrypt_decrypt(input_file, output_file, public_key_file, private_key_file, encrypt=True):
+    if encrypt:
+        with open(input_file, 'rb') as f:
+            data = f.read()
+
+        # Generate AES key for encryption
+        aes_key = generate_aes_key(256)  # AES-256
+
+        with open(public_key_file, 'rb') as key_file:
+            public_key = serialization.load_pem_public_key(
+                key_file.read(),
+                backend=default_backend()
+            )
+
+        # Encrypt AES key with RSA public key
+        encrypted_aes_key = public_key.encrypt(
+            aes_key,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+
+        # Encrypt the data with AES
+        iv = os.urandom(16)
+        cipher = Cipher(algorithms.AES(aes_key), modes.CFB(iv), backend=default_backend())
+        encryptor = cipher.encryptor()
+        ciphertext = encryptor.update(data) + encryptor.finalize()
+
+        with open(output_file, 'wb') as f:
+            f.write(iv)
+            f.write(encrypted_aes_key)
+            f.write(ciphertext)
+    else:
+        with open(input_file, 'rb') as f:
+            iv = f.read(16)
+            encrypted_aes_key = f.read(256)  # Assuming RSA key size is 2048 bits
+            ciphertext = f.read()
+
+        with open(private_key_file, 'rb') as key_file:
+            private_key = serialization.load_pem_private_key(
+                key_file.read(),
+                password=None,
+                backend=default_backend()
+            )
+
+        # Decrypt AES key with RSA private key
+        aes_key = private_key.decrypt(
+            encrypted_aes_key,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+
+        # Decrypt the data with AES
+        cipher = Cipher(algorithms.AES(aes_key), modes.CFB(iv), backend=default_backend())
+        decryptor = cipher.decryptor()
+        plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+
+        with open(output_file, 'wb') as f:
+            f.write(plaintext)
+```
+
+### Generating RSA key
+
+<img src="./images/RSA_key.png">
+
+RSA public key,
+
+<img src="./images/RSA_public_key.png">
+
+RSA private key,
+
+<img src="./images/RSA_private_key.png">
+
+### RSA Encryption
+
+<img src="./images/RSA_encryption.png">
+
+Encrypted file,
+
+<img src="./images/RSA_encryption_file.png">
+
+
+### RSA Decryption
+
+<img src="./images/RSA_decryption.png">
+
+Decrypted file,
+
+<img src="./images/RSA_decryption_file.png">

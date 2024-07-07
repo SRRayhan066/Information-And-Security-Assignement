@@ -94,18 +94,22 @@ def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=Tru
 
 # RSA encryption/decryption
 def rsa_encrypt_decrypt(input_file, output_file, public_key_file, private_key_file, encrypt=True):
-    with open(input_file, 'rb') as f:
-        data = f.read()
-
     if encrypt:
+        with open(input_file, 'rb') as f:
+            data = f.read()
+
+        # Generate AES key for encryption
+        aes_key = generate_aes_key(256)  # AES-256
+
         with open(public_key_file, 'rb') as key_file:
             public_key = serialization.load_pem_public_key(
                 key_file.read(),
                 backend=default_backend()
             )
 
-        ciphertext = public_key.encrypt(
-            data,
+        # Encrypt AES key with RSA public key
+        encrypted_aes_key = public_key.encrypt(
+            aes_key,
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
@@ -113,9 +117,22 @@ def rsa_encrypt_decrypt(input_file, output_file, public_key_file, private_key_fi
             )
         )
 
+        # Encrypt the data with AES
+        iv = os.urandom(16)
+        cipher = Cipher(algorithms.AES(aes_key), modes.CFB(iv), backend=default_backend())
+        encryptor = cipher.encryptor()
+        ciphertext = encryptor.update(data) + encryptor.finalize()
+
         with open(output_file, 'wb') as f:
+            f.write(iv)
+            f.write(encrypted_aes_key)
             f.write(ciphertext)
     else:
+        with open(input_file, 'rb') as f:
+            iv = f.read(16)
+            encrypted_aes_key = f.read(256)  # Assuming RSA key size is 2048 bits
+            ciphertext = f.read()
+
         with open(private_key_file, 'rb') as key_file:
             private_key = serialization.load_pem_private_key(
                 key_file.read(),
@@ -123,14 +140,20 @@ def rsa_encrypt_decrypt(input_file, output_file, public_key_file, private_key_fi
                 backend=default_backend()
             )
 
-        plaintext = private_key.decrypt(
-            data,
+        # Decrypt AES key with RSA private key
+        aes_key = private_key.decrypt(
+            encrypted_aes_key,
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None
             )
         )
+
+        # Decrypt the data with AES
+        cipher = Cipher(algorithms.AES(aes_key), modes.CFB(iv), backend=default_backend())
+        decryptor = cipher.decryptor()
+        plaintext = decryptor.update(ciphertext) + decryptor.finalize()
 
         with open(output_file, 'wb') as f:
             f.write(plaintext)
