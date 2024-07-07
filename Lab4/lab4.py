@@ -3,18 +3,10 @@ import time
 import hashlib
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives.asymmetric import utils as rsa_utils
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding as sym_padding
 from cryptography.hazmat.primitives import hmac
-from cryptography.hazmat.primitives import padding as padding_module
-from cryptography.hazmat.primitives.hashes import SHA256
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.backends import default_backend
-
 
 # Generate AES key
 def generate_aes_key(key_size):
@@ -49,6 +41,7 @@ def generate_rsa_keys(key_size):
         )
 
 # AES encryption/decryption
+# AES encryption/decryption
 def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=True):
     backend = default_backend()
     block_size = algorithms.AES.block_size
@@ -56,8 +49,16 @@ def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=Tru
     if mode == 'ECB':
         cipher_mode = modes.ECB()
     elif mode == 'CFB':
-        cipher_mode = modes.CFB(iv)
-
+        if encrypt:
+            if iv is None:
+                iv = os.urandom(16)
+            cipher_mode = modes.CFB(iv)
+        else:
+            with open(input_file, 'rb') as f:
+                iv = f.read(16)
+                ciphertext = f.read()
+            cipher_mode = modes.CFB(iv)
+    
     cipher = Cipher(algorithms.AES(key), cipher_mode, backend=backend)
 
     if encrypt:
@@ -79,19 +80,19 @@ def aes_encrypt_decrypt(input_file, output_file, key, mode, iv=None, encrypt=Tru
         unpadder = sym_padding.PKCS7(block_size).unpadder()
 
         with open(input_file, 'rb') as f:
-            if mode == 'CFB':
-                iv = f.read(block_size // 8)
-            ciphertext = f.read()
-
+            if mode != 'CFB':
+                ciphertext = f.read()
+            # No need to re-read the file here, already read above
+            # ciphertext = f.read()
+        
         padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
         plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
 
         with open(output_file, 'wb') as f:
             f.write(plaintext)
 
+
 # RSA encryption/decryption
-# Function to perform RSA encryption or decryption
-# Function to perform RSA encryption or decryption
 def rsa_encrypt_decrypt(input_file, output_file, public_key_file, private_key_file, encrypt=True):
     with open(input_file, 'rb') as f:
         data = f.read()

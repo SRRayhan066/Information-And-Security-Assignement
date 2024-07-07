@@ -116,3 +116,32 @@ The decrypted file,
 ### CFB Mode
 Similar process for CFB mode 128 bits and 256 bits.
 
+#### <b>Encryption using 128 bits</b>
+
+<img src="./images/CFB_128_encryption.png">
+
+<img src="./images/CFB_128_encryption_file.png">
+
+
+
+#### <b>Decryption using 128 bits</b>
+
+<img src="./images/CFB_128_decryption.png">
+
+<img src="./images/CFB_128_decryption_file.png">
+
+
+
+#### <b>Encryption using 256 bits</b>
+
+<img src="./images/CFB_256_encryption.png">
+
+<img src="./images/CFB_256_encryption_file.png">
+
+
+#### <b>Decryption using 256 bits</b>
+
+<img src="./images/CFB_256_encryption.png">
+
+
+<img src="./images/CFB_256_encryption_file.png">
