@@ -38,8 +38,29 @@ After decryption,
 
 <img src="./images/ECB_128_decryption.png">
 
-The decryption file,        
+The decrypted file,        
 
 <img src="./images/ECB_128_decryption_file.png">
 
 
+#### <b>Encryption using 256 bits</b>
+
+Similarly the process continue in 256 bits,
+
+<img src="./images/ECB_256_encryption.png">
+
+The encrypted file,
+
+<img src="./images/ECB_256_encryption_file.png">
+
+
+
+#### <b>Decryption using 256 bits</b>
+
+And the decryption process is,
+
+<img src="./images/ECB_256_decryption.png">
+
+The decrypted file,
+
+<img src="./images/ECB_256_decrypted_file.png">
