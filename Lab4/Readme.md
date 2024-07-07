@@ -256,3 +256,68 @@ Encrypted file,
 Decrypted file,
 
 <img src="./images/RSA_decryption_file.png">
+
+
+
+# RSA Signature
+
+### Pseudocode for RSA signature
+```
+def rsa_sign_verify(input_file, signature_file, private_key_file=None, public_key_file=None, sign=True):
+    if sign:
+        with open(private_key_file, 'rb') as key_file:
+            private_key = serialization.load_pem_private_key(
+                key_file.read(),
+                password=None,
+                backend=default_backend()
+            )
+
+        with open(input_file, 'rb') as f:
+            data = f.read()
+
+        signature = private_key.sign(
+            data,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256()
+        )
+
+        with open(signature_file, 'wb') as f:
+            f.write(signature)
+    else:
+        with open(public_key_file, 'rb') as key_file:
+            public_key = serialization.load_pem_public_key(
+                key_file.read(),
+                backend=default_backend()
+            )
+
+        with open(input_file, 'rb') as f:
+            data = f.read()
+
+        with open(signature_file, 'rb') as f:
+            signature = f.read()
+
+        try:
+            public_key.verify(
+                signature,
+                data,
+                padding.PSS(
+                    mgf=padding.MGF1(hashes.SHA256()),
+                    salt_length=padding.PSS.MAX_LENGTH
+                ),
+                hashes.SHA256()
+            )
+            print("Verification successful")
+        except Exception as e:
+            print("Verification failed:", e)
+```
+
+### Generating Signature
+
+<img src="./images/Signature.png">
+
+### Verify Signature
+
+<img src="./images/verify.png">
